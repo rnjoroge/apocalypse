@@ -6,7 +6,9 @@
 /db
 /target
 .env
-
+.settings
+.project
+.classpath
 # Package Files #
 *.jar
 *.war
