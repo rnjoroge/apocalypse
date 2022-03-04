@@ -5,6 +5,7 @@ package apocalypse.dao;
 
 
 import java.io.StringWriter;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Iterator;
 import org.bson.Document;
@@ -30,11 +31,13 @@ public class reportDao {
 	 * Report Summary 
 	 * Returns a summary of all infected and non infected survivors
 	 */
+    private static final DecimalFormat df = new DecimalFormat("0.00");
 	
 	 public static String  reportSummary() throws CustomApplicationError {
 			
 
-		 
+		 int Totalcount = (int) getCollection().countDocuments();
+		
 		 StringWriter sb = new StringWriter();
 		 sb.append("[");
 		 boolean first = true;
@@ -42,11 +45,19 @@ public class reportDao {
 				 Aggregates.group("$infection_status", Accumulators.sum("count", 1))
 				 ));
 		 Iterator iterator = docs.iterator();
+		 
+	
+		 
 		  while (iterator.hasNext()) {
 			 
 			 if (!first) sb.append(",");
              else first = false;
-             sb.append(((Document) iterator.next()).toJson());
+			 Document currDoc = (Document) iterator.next();
+			 int numDoc =(int) currDoc.get("count");
+			 double percentage = (numDoc/(double)Totalcount) * 100;
+
+			       currDoc.append("percentage", df.format(percentage));
+             sb.append(currDoc.toJson());
 			   
 			}
 

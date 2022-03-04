@@ -20,16 +20,20 @@ public class MongoDB {
   
     private static void init() {
         if ((mongo == null)) {
-     	    
-            Dotenv dotenv = null;
-            dotenv = Dotenv.configure().load();
-            
-            // if running with docker compose
-            String client_url = "mongodb://mongo-db:27017/apocalypse" ;
-            if(dotenv.get("MONGO-URL") !=null) {
-            	// running with mongo url defined
-            	client_url=dotenv.get("MONGO-URL") ;
-            }
+        	  String client_url = "mongodb://mongo-db:27017/apocalypse" ;
+        	  try {
+        		    // if running with docker compose
+        	      Dotenv dotenv = null;
+                  dotenv = Dotenv.configure().load();       
+                  if(dotenv.get("MONGOURL") !=null) {
+                  	// running with mongo url defined
+                  	client_url=dotenv.get("MONGOURL") ;
+                  }
+        	  }
+        	  catch (Exception err) {
+        		  
+        	  }
+      
             MongoClientURI uri = new MongoClientURI(client_url);
             mongo = new MongoClient(uri);
         }
